@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat</title>
+</head>
+<body>
+    <h1>Chat</h1>
+    <div id="chat">
+
+    </div>
+    <br>
+    <input type="text" name="" id="msg">
+    <input type="text" name="" id="username" placeholder="Diga seu nome">
+    <br>
+    <button type="submit" onclick="enviar()">Enviar</button>
+</body>
+<script src="https://cdn.socket.io/4.4.0/socket.io.min.js" integrity="sha384-1fOn6VtTq3PWwfsOrk45LnYcGosJwzMHv+Xh/Jx5303FVOXzEnw0EpLv30mtjmlj" crossorigin="anonymous"></script>
+<script>
+    let socket = io('http://localhost:3000');
+
+    socket.on('disconnect', function(){
+        console.log('Desconectado do servidor');
+    });
+
+    socket.on('showmsg', (data) => {
+        let chat = document.getElementById('chat')
+
+        let msg = document.createElement('div')
+        msg.innerHTML = `<p><strong>${data.username}</strong>: ${data.msg}</p>`
+
+        chat.appendChild(msg)
+    })
+
+    function enviar(){
+        let msg = document.getElementById('msg').value;
+        let username = document.getElementById('username').value;
+        socket.emit('msg', {
+            msg,
+            username
+        });
+    }
+    
+</script>
+</html>
